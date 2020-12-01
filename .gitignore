@@ -30,3 +30,5 @@
 *.exe
 *.out
 *.app
+/.vs
+/ue2/.vs/ue2/v16
