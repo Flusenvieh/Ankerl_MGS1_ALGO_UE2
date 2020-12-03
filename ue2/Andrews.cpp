@@ -14,18 +14,18 @@ void Andrews::InitSteppable(std::vector<Point> list)
 
 std::vector<Point> Andrews::Step(void)
 {
-	int hullSize = _hullPoints.size();
-
 	switch (_currentStatus)//build upper hull
 	{
 		case upper:
+			_hullPoints.pop_back();
+			int hullSize = _hullPoints.size();
 			if (hullSize >= 2 && cross(_allPoints[_i], _hullPoints[hullSize - 1], _hullPoints[hullSize - 2]) < 0)
 			{
 				_hullPoints.pop_back();
-				_hullPoints.pop_back();
 			}
 			else
-			{				
+			{		
+				
 				_i++;
 				if (_i == _allPoints.size())
 				{
@@ -36,13 +36,15 @@ std::vector<Point> Andrews::Step(void)
 			_hullPoints.push_back(_allPoints[_i]);
 			break;
 		case lower:
+			_hullPoints.pop_back();
+			int hullSize = _hullPoints.size();
 			if (hullSize >= _upperHullSize && cross(_allPoints[_i], _hullPoints[hullSize - 1], _hullPoints[hullSize - 2]) < 0)
 			{
-				_hullPoints.pop_back();
 				_hullPoints.pop_back();
 			}
 			else
 			{
+
 				_i--;
 				if (_i < 0)
 				{
