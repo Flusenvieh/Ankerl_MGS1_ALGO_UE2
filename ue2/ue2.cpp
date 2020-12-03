@@ -29,6 +29,18 @@ int main()
     {
         std::cout << hull[i].x << " " << hull[i].y << std::endl;
     }
+    
+    std::cout << std::endl;
+
+    a.InitSteppable(list);
+    while (a.HasNextStep())
+    {
+        hull = a.Step();
+    }
+    for (int i = 0; i < hull.size(); i++)
+    {
+        std::cout << hull[i].x << " " << hull[i].y << std::endl;
+    }
 }
 
 // Programm ausführen: STRG+F5 oder Menüeintrag "Debuggen" > "Starten ohne Debuggen starten"
