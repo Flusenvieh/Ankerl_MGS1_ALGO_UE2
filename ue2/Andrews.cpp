@@ -1,5 +1,87 @@
 #include "Andrews.h"
 
+void Andrews::InitSteppable(std::vector<Point> list)
+{
+	_allPoints = list;
+	_hullPoints.resize(list.size() * 2);
+
+	Reset();
+
+	//Sort list by x-coordinate, in case of tie use y-coordinate
+	Quicksort qs;
+	qs.sort(list.data(), 0, list.size() - 1);
+}
+
+std::vector<Point> Andrews::Step(void)
+{
+	bool incI = false;
+	int hullSize = _hullPoints.size();
+
+	switch (_currentStatus)//build upper hull
+	{
+		case upper:
+			if (hullSize >= 2 && cross(_allPoints[_i], _hullPoints[hullSize - 1], _hullPoints[hullSize - 2]) < 0)
+			{
+				_hullPoints.pop_back();
+			}
+			else
+			{
+				_hullPoints.push_back(_allPoints[_i]);
+				_i++;
+				if (_i == _allPoints.size())
+				{
+					_currentStatus = lower;
+					_i = _allPoints.size() - 2;
+				}
+			}
+			break;
+		case lower:
+			if (hullSize >= _upperHullSize && cross(_allPoints[_i], _hullPoints[hullSize - 1], _hullPoints[hullSize - 2]) < 0)
+			{
+				_hullPoints.pop_back();
+			}
+			else
+			{
+				_hullPoints.push_back(_allPoints[_i]);
+				_i--;
+				if (_i < 0)
+				{
+					_currentStatus = done;
+					_hullPoints.pop_back();
+					_hullPoints.shrink_to_fit();
+				}
+			}
+			break;
+	}
+	return _hullPoints;
+}
+
+std::vector<Point> Andrews::State(void) const
+{
+	return _hullPoints;
+}
+
+bool Andrews::HasNextStep(void) const
+{
+	if (_currentStatus < done)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Andrews::Reset(void)
+{	
+	_hullPoints.clear();
+
+	_i = 0;
+	_upperHullSize = 0;
+	_currentStatus = upper;
+}
+
 // Cross product of two vectors OA and OB 
 // returns positive for counter clockwise 
 // turn and negative for clockwise turn 
@@ -19,29 +101,29 @@ std::vector<Point> Andrews::returnConvexHull(std::vector<Point> list) const
 	qs.sort(list.data(), 0, list.size() - 1);
 	auto stopSorting = std::chrono::high_resolution_clock::now();
 
-	std::vector<Point> hull;
-	for (size_t i = 0; i < list.size(); ++i)//build upper hull
+	std::vector<Point> hull(2*n);
+	int hullSize = 0;
+	for (int i = 0; i < n; ++i)//build upper hull
 	{
-		int hullSize = hull.size();
 		while (hullSize >= 2 && cross(list[i], hull[hullSize - 1], hull[hullSize - 2]) < 0)
 		{
-			hull.pop_back();
 			hullSize--;
 		}
-		hull.push_back(list[i]);
+		hull[hullSize] = list[i];
+		hullSize++;
 	}
-	int upperHullSize = hull.size() + 1; // add one to avoid deleting turning point
-	for (size_t i = list.size() - 2; i > 0; --i)//build upper hull
+
+	int upperHullSize = hullSize + 1; // add one to avoid deleting turning point
+	for (int i = n - 2; i > 0; --i)//build lower hull
 	{
-		int hullSize = hull.size();
 		while (hullSize >= upperHullSize && cross(list[i], hull[hullSize - 1], hull[hullSize - 2]) < 0)
 		{
-			hull.pop_back();
 			hullSize--;
 		}
-		hull.push_back(list[i]);
+		hull[hullSize] = list[i];
+		hullSize++;
 	}
-	hull.pop_back();
-	hull.shrink_to_fit();
+
+	hull.resize(hullSize - 1);
 	return hull;
 }
