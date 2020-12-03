@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <chrono>
+#include <thread>
 #include <vector>
 #include <fstream>
 #include <string>
@@ -94,28 +95,32 @@ int main(int argc, char* argv[])
     hull = a.returnConvexHull(list);
 
     Draw();
-    for (int i = 0; i < hull.size(); i++)
+    /*for (int i = 0; i < hull.size(); i++)
     {
         std::cout << hull[i].x << " " << hull[i].y << std::endl;
-    }
+    }*/
     
     std::cout << std::endl;
 
-    a.InitSteppable(list);
+    /*a.InitSteppable(list);
     while (a.HasNextStep())
     {
         hull = a.Step();
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
     for (int i = 0; i < hull.size(); i++)
     {
         std::cout << hull[i].x << " " << hull[i].y << std::endl;
-    }
+    }*/
 }
 
 void Draw()
 {
     // create the window
     sf::RenderWindow window(sf::VideoMode(1024, 1024), "Andrews");
+    Andrews a;
+    a.InitSteppable(list);
 
     // run the main loop
     while (window.isOpen())
@@ -126,6 +131,11 @@ void Draw()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+        }
+
+        if (a.HasNextStep())
+        {
+            hull = a.Step();
         }
 
         // draw it
@@ -144,14 +154,14 @@ void Draw()
             if (i < hull.size() - 1)
             {
                 sf::Vertex line[2];
-                line[0].position = sf::Vector2f((hull[i].x * sizeMultiplier)+radius, (hull[i].y * sizeMultiplier) + radius);
+                line[0].position = sf::Vector2f((hull[i].x * sizeMultiplier) + radius, (hull[i].y * sizeMultiplier) + radius);
                 line[0].color = sf::Color::Red;
-                line[1].position = sf::Vector2f((hull[i+1].x * sizeMultiplier) + radius, (hull[i+1].y * sizeMultiplier) + radius);
+                line[1].position = sf::Vector2f((hull[i + 1].x * sizeMultiplier) + radius, (hull[i + 1].y * sizeMultiplier) + radius);
                 line[1].color = sf::Color::Red;
 
                 window.draw(line, 2, sf::Lines);
             }
-            else
+            else if (!a.HasNextStep())
             {
                 sf::Vertex line[2];
                 line[0].position = sf::Vector2f((hull[i].x * sizeMultiplier) + radius, (hull[i].y * sizeMultiplier) + radius);
@@ -164,6 +174,7 @@ void Draw()
         }
 
         window.display();
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 }
 
