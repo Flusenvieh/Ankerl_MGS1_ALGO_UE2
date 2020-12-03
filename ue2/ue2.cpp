@@ -2,10 +2,33 @@
 //
 
 #include <iostream>
+#include <chrono>
+#include <vector>
+
+#include "Point.h"
+#include "Andrews.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    //auto stopQs = std::chrono::high_resolution_clock::now();
+    //std::cout << "Time for Quicksort: " << std::chrono::duration_cast<std::chrono::microseconds>(stopQs - startQs).count() << std::endl << std::endl;
+    
+    std::vector<Point> list = { 
+                        Point(2.0f,4.0f), 
+                        Point(8.0f,8.0f), 
+                        Point(12.0f,2.0f), 
+                        Point(5.0f,1.0f), 
+                        Point(4.0f,5.0f), 
+                        Point(6.0f,3.5f), 
+                        Point(10.0f,3.0f) 
+                    };
+
+    Andrews a;
+    std::vector<Point> hull = a.returnConvexHull(list);
+    for (int i = 0; i < hull.size(); i++)
+    {
+        std::cout << hull[i].x << " " << hull[i].y << std::endl;
+    }
 }
 
 // Programm ausführen: STRG+F5 oder Menüeintrag "Debuggen" > "Starten ohne Debuggen starten"

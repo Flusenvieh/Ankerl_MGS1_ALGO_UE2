@@ -32,3 +32,5 @@
 *.app
 /.vs
 /ue2/.vs/ue2/v16
+/ue2/Debug/ue2.tlog
+/ue2/Debug
