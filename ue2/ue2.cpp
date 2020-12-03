@@ -4,30 +4,154 @@
 #include <iostream>
 #include <chrono>
 #include <vector>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <random>
+#include <SFML/Main.hpp>
+#include <SFML/Graphics.hpp>
 
 #include "Point.h"
 #include "Andrews.h"
 
-int main()
+void Draw();
+
+std::vector<Point> list;
+std::vector<Point> hull;
+float radius = 5.0;
+float sizeMultiplier = 70;
+int randomCnt = 10;
+float randomMin=0, randomMax=14;
+int mode = 0;
+
+char* getOption(char** start, char** end, const std::string& option)
+{
+    char** iterator = std::find(start, end, option);
+
+    if (iterator != end && ++iterator != end)
+    {
+        return *iterator;
+    }
+    return nullptr;
+
+}
+
+bool OptionExists(char** start, char** end, const std::string& option)
+{
+    return std::find(start, end, option) != end;
+}
+
+int main(int argc, char* argv[])
 {
     //auto stopQs = std::chrono::high_resolution_clock::now();
     //std::cout << "Time for Quicksort: " << std::chrono::duration_cast<std::chrono::microseconds>(stopQs - startQs).count() << std::endl << std::endl;
     
-    std::vector<Point> list = { 
-                        Point(2.0f,4.0f), 
-                        Point(8.0f,8.0f), 
-                        Point(12.0f,2.0f), 
-                        Point(5.0f,1.0f), 
-                        Point(4.0f,5.0f), 
-                        Point(6.0f,3.5f), 
-                        Point(10.0f,3.0f) 
-                    };
+
+    char* filePath = getOption(argv, argv + argc, "--file");
+    char* newRandomCnt = getOption(argv, argv + argc, "--random");
+    if (newRandomCnt != nullptr)
+    {
+        randomCnt = atoi(newRandomCnt);
+    }
+    char* newMode = getOption(argv, argv + argc, "--mode");
+    if (newMode != nullptr)
+    {
+        mode = atoi(newMode);
+    }
+    
+    if (filePath != nullptr)
+    {
+        std::ifstream inputfile(filePath);
+        std::string line;
+
+        int x, y;
+
+        while (std::getline(inputfile, line))
+        {
+            std::istringstream line_stream(line);
+
+            if (line_stream >> x && line_stream.get() == ',' && line_stream >> y) 
+            {
+                list.push_back(Point(x, y));
+            }
+        }
+    }
+
+    if (list.empty())
+    {
+        std::random_device rnd;
+        std::mt19937 gen(rnd());
+        std::uniform_real_distribution<> dis(randomMin, randomMax);
+
+        for (int i = 0; i < randomCnt; i++)
+        {
+            list.push_back(Point(dis(gen), dis(gen)));
+        }
+    }
 
     Andrews a;
-    std::vector<Point> hull = a.returnConvexHull(list);
+    
+    hull = a.returnConvexHull(list);
+
+    Draw();
     for (int i = 0; i < hull.size(); i++)
     {
         std::cout << hull[i].x << " " << hull[i].y << std::endl;
+    }
+}
+
+void Draw()
+{
+    // create the window
+    sf::RenderWindow window(sf::VideoMode(1024, 1024), "Andrews");
+
+    // run the main loop
+    while (window.isOpen())
+    {
+        // handle events
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        // draw it
+        window.clear();
+
+        for (auto coord : list)
+        {
+            sf::CircleShape point;
+            point.setPosition(sf::Vector2f(coord.x * sizeMultiplier, coord.y * sizeMultiplier));
+            point.setRadius(radius);
+            window.draw(point);
+        }
+
+        for (int i = 0; i < hull.size(); i++)
+        {
+            if (i < hull.size() - 1)
+            {
+                sf::Vertex line[2];
+                line[0].position = sf::Vector2f((hull[i].x * sizeMultiplier)+radius, (hull[i].y * sizeMultiplier) + radius);
+                line[0].color = sf::Color::Red;
+                line[1].position = sf::Vector2f((hull[i+1].x * sizeMultiplier) + radius, (hull[i+1].y * sizeMultiplier) + radius);
+                line[1].color = sf::Color::Red;
+
+                window.draw(line, 2, sf::Lines);
+            }
+            else
+            {
+                sf::Vertex line[2];
+                line[0].position = sf::Vector2f((hull[i].x * sizeMultiplier) + radius, (hull[i].y * sizeMultiplier) + radius);
+                line[0].color = sf::Color::Red;
+                line[1].position = sf::Vector2f((hull[0].x * sizeMultiplier) + radius, (hull[0].y * sizeMultiplier) + radius);
+                line[1].color = sf::Color::Red;
+
+                window.draw(line, 2, sf::Lines);
+            }
+        }
+
+        window.display();
     }
 }
 
