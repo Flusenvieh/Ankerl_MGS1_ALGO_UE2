@@ -14,46 +14,48 @@ void Andrews::InitSteppable(std::vector<Point> list)
 
 std::vector<Point> Andrews::Step(void)
 {
+	int hullSize;
 	switch (_currentStatus)//build upper hull
 	{
 		case upper:
-			_hullPoints.pop_back();
-			int hullSize = _hullPoints.size();
-			if (hullSize >= 2 && cross(_allPoints[_i], _hullPoints[hullSize - 1], _hullPoints[hullSize - 2]) < 0)
+			hullSize = _hullPoints.size();
+			if (hullSize >= 3 && cross(_hullPoints[hullSize - 1], _hullPoints[hullSize - 2], _hullPoints[hullSize - 3]) < 0)
 			{
-				_hullPoints.pop_back();
+				_hullPoints.erase(_hullPoints.end()-2);
 			}
 			else
 			{		
-				
-				_i++;
 				if (_i == _allPoints.size())
 				{
 					_currentStatus = lower;
 					_i = _allPoints.size() - 2;
+					_upperHullSize = hullSize + 1;
 				}
+				_hullPoints.push_back(_allPoints[_i]);
+				_i++;
 			}
-			_hullPoints.push_back(_allPoints[_i]);
+
 			break;
 		case lower:
-			_hullPoints.pop_back();
-			int hullSize = _hullPoints.size();
-			if (hullSize >= _upperHullSize && cross(_allPoints[_i], _hullPoints[hullSize - 1], _hullPoints[hullSize - 2]) < 0)
+
+			hullSize = _hullPoints.size();
+			if (hullSize >= _upperHullSize && cross(_hullPoints[hullSize - 1], _hullPoints[hullSize - 2], _hullPoints[hullSize - 3]) < 0)
 			{
-				_hullPoints.pop_back();
+				_hullPoints.erase(_hullPoints.end() - 2);
 			}
 			else
 			{
-
-				_i--;
 				if (_i < 0)
 				{
 					_currentStatus = done;
 					_hullPoints.pop_back();
 					_hullPoints.shrink_to_fit();
+					return _hullPoints;
 				}
+				_hullPoints.push_back(_allPoints[_i]);
+				_i--;
 			}
-			_hullPoints.push_back(_allPoints[_i]);
+
 			break;
 	}
 	return _hullPoints;
