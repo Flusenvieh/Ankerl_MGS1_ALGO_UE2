@@ -9,7 +9,7 @@ void Andrews::InitSteppable(std::vector<Point> list)
 
 	//Sort list by x-coordinate, in case of tie use y-coordinate
 	Quicksort qs;
-	qs.sort(list.data(), 0, list.size() - 1);
+	qs.sort(_allPoints.data(), 0, _allPoints.size() - 1);
 }
 
 std::vector<Point> Andrews::Step(void)
