@@ -69,7 +69,7 @@ std::vector<Point> Andrews::State(void) const
 
 bool Andrews::HasNextStep(void) const
 {
-	if (_currentStatus < done)
+	if (_currentStatus < done && !_allPoints.empty())
 	{
 		return true;
 	}

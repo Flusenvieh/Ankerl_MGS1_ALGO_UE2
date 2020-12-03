@@ -24,6 +24,7 @@ float sizeMultiplier = 70;
 int randomCnt = 10;
 float randomMin=0, randomMax=14;
 int mode = 0;
+Andrews a;
 
 char* getOption(char** start, char** end, const std::string& option)
 {
@@ -89,10 +90,16 @@ int main(int argc, char* argv[])
             list.push_back(Point(dis(gen), dis(gen)));
         }
     }
-
-    Andrews a;
     
-    hull = a.returnConvexHull(list);
+
+    if (mode == 0)
+    {
+        hull = a.returnConvexHull(list);
+    }
+    else if(mode == 1)
+    {
+        a.InitSteppable(list);
+    }
 
     Draw();
     /*for (int i = 0; i < hull.size(); i++)
@@ -119,8 +126,8 @@ void Draw()
 {
     // create the window
     sf::RenderWindow window(sf::VideoMode(1024, 1024), "Andrews");
-    Andrews a;
-    a.InitSteppable(list);
+    
+    
 
     // run the main loop
     while (window.isOpen())
