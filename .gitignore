@@ -34,4 +34,6 @@
 /ue2/Debug
 /ue2/x64/Debug
 
-ue2/ue2.vcxproj
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user

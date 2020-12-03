@@ -30,6 +30,7 @@ std::vector<Point> Andrews::Step(void)
 					_currentStatus = lower;
 					_i = _allPoints.size() - 2;
 					_upperHullSize = hullSize + 1;
+					return _hullPoints;
 				}
 				_hullPoints.push_back(_allPoints[_i]);
 				_i++;
