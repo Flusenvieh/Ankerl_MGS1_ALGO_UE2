@@ -9,12 +9,11 @@ void Andrews::InitSteppable(std::vector<Point> list)
 
 	//Sort list by x-coordinate, in case of tie use y-coordinate
 	Quicksort qs;
-	qs.sort(list.data(), 0, list.size() - 1);
+	qs.sort(_allPoints.data(), 0, _allPoints.size() - 1);
 }
 
 std::vector<Point> Andrews::Step(void)
 {
-	bool incI = false;
 	int hullSize = _hullPoints.size();
 
 	switch (_currentStatus)//build upper hull
@@ -23,10 +22,10 @@ std::vector<Point> Andrews::Step(void)
 			if (hullSize >= 2 && cross(_allPoints[_i], _hullPoints[hullSize - 1], _hullPoints[hullSize - 2]) < 0)
 			{
 				_hullPoints.pop_back();
+				_hullPoints.pop_back();
 			}
 			else
-			{
-				_hullPoints.push_back(_allPoints[_i]);
+			{				
 				_i++;
 				if (_i == _allPoints.size())
 				{
@@ -34,15 +33,16 @@ std::vector<Point> Andrews::Step(void)
 					_i = _allPoints.size() - 2;
 				}
 			}
+			_hullPoints.push_back(_allPoints[_i]);
 			break;
 		case lower:
 			if (hullSize >= _upperHullSize && cross(_allPoints[_i], _hullPoints[hullSize - 1], _hullPoints[hullSize - 2]) < 0)
 			{
 				_hullPoints.pop_back();
+				_hullPoints.pop_back();
 			}
 			else
 			{
-				_hullPoints.push_back(_allPoints[_i]);
 				_i--;
 				if (_i < 0)
 				{
@@ -51,6 +51,7 @@ std::vector<Point> Andrews::Step(void)
 					_hullPoints.shrink_to_fit();
 				}
 			}
+			_hullPoints.push_back(_allPoints[_i]);
 			break;
 	}
 	return _hullPoints;
