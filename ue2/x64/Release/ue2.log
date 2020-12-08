@@ -1,0 +1,15 @@
+﻿  Andrews.cpp
+C:\Users\Nicolas Wolf\Documents\Master Studies\Semester 1\Algo\UE2\Ankerl_MGS1_ALGO_UE2\ue2\Andrews.cpp(13,53): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Nicolas Wolf\Documents\Master Studies\Semester 1\Algo\UE2\Ankerl_MGS1_ALGO_UE2\ue2\Andrews.cpp(22,33): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Nicolas Wolf\Documents\Master Studies\Semester 1\Algo\UE2\Ankerl_MGS1_ALGO_UE2\ue2\Andrews.cpp(32,32): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Nicolas Wolf\Documents\Master Studies\Semester 1\Algo\UE2\Ankerl_MGS1_ALGO_UE2\ue2\Andrews.cpp(43,33): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Nicolas Wolf\Documents\Master Studies\Semester 1\Algo\UE2\Ankerl_MGS1_ALGO_UE2\ue2\Andrews.cpp(103,21): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Nicolas Wolf\Documents\Master Studies\Semester 1\Algo\UE2\Ankerl_MGS1_ALGO_UE2\ue2\Andrews.cpp(108,41): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Nicolas Wolf\Documents\Master Studies\Semester 1\Algo\UE2\Ankerl_MGS1_ALGO_UE2\ue2\Andrews.cpp(158,41): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Nicolas Wolf\Documents\Master Studies\Semester 1\Algo\UE2\Ankerl_MGS1_ALGO_UE2\ue2\Andrews.cpp(162,21): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Generating code
+  7 of 510 functions ( 1.4%) were compiled, the rest were copied from previous compilation.
+    3 functions were new in current compilation
+    9 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  ue2.vcxproj -> C:\Users\Nicolas Wolf\Documents\Master Studies\Semester 1\Algo\UE2\Ankerl_MGS1_ALGO_UE2\ue2\x64\Release\ue2.exe
