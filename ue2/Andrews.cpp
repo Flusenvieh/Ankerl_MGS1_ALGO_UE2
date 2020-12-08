@@ -120,7 +120,7 @@ std::vector<Point> Andrews::returnConvexHull(std::vector<Point> list) const
 	}
 
 	int upperHullSize = hullSize + 1; // add one to avoid deleting turning point
-	for (int i = n - 2; i > 0; --i)//build lower hull
+	for (int i = n - 2; i >= 0; --i)//build lower hull
 	{
 		while (hullSize >= upperHullSize && cross(list[i], hull[hullSize - 1], hull[hullSize - 2]) < 0)
 		{
