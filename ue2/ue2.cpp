@@ -95,13 +95,24 @@ int main(int argc, char* argv[])
     if (mode == 0)
     {
         hull = a.returnConvexHull(list);
+        
     }
     else if(mode == 1)
     {
         a.InitSteppable(list);
     }
+    else if (mode == 2)
+    {
+        hull = a.returnConvexHull_Multithreaded(list);
+    }
+    else if (mode == 3)
+    {
+        a.returnConvexHull(list);
+        a.returnConvexHull_Multithreaded(list);
+    }
 
-    Draw();
+    //Draw();
+
     /*for (int i = 0; i < hull.size(); i++)
     {
         std::cout << hull[i].x << " " << hull[i].y << std::endl;

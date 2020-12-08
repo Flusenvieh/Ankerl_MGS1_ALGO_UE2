@@ -1,4 +1,5 @@
 #include "Andrews.h"
+#include <iostream> //TODO: DELETE LATER
 
 void Andrews::InitSteppable(std::vector<Point> list)
 {
@@ -107,6 +108,7 @@ std::vector<Point> Andrews::returnConvexHull(std::vector<Point> list) const
 	qs.sort(list.data(), 0, list.size() - 1);
 	auto stopSorting = std::chrono::high_resolution_clock::now();
 
+	auto startCreateHull = std::chrono::high_resolution_clock::now();
 	std::vector<Point> hull(2*n);
 	int hullSize = 0;
 	for (int i = 0; i < n; ++i)//build upper hull
@@ -131,5 +133,81 @@ std::vector<Point> Andrews::returnConvexHull(std::vector<Point> list) const
 	}
 
 	hull.resize(hullSize - 1);
+
+	auto stopCreateHull = std::chrono::high_resolution_clock::now();
+
+	auto sortingDuration = std::chrono::duration_cast<std::chrono::milliseconds>(stopSorting - startSorting);
+	auto creatingDuration = std::chrono::duration_cast<std::chrono::milliseconds>(stopCreateHull - startCreateHull);
+
+	std::cout << "Single Thread\n";
+	std::cout << "Presorting the Points took " << sortingDuration.count() << "s. \n";
+	std::cout << "Creating the Hull took " << creatingDuration.count() << "s. \n";
+
 	return hull;
+}
+
+std::vector<Point> Andrews::returnConvexHull_Multithreaded(std::vector<Point> list) const
+{
+	auto startSorting = std::chrono::high_resolution_clock::now();
+	Quicksort qs;
+	qs.sort(list.data(), 0, list.size() - 1);
+	auto stopSorting = std::chrono::high_resolution_clock::now();
+
+	auto startCreateHull = std::chrono::high_resolution_clock::now();
+	int n = list.size();
+	std::vector<Point> upperHullVector(n);
+	std::vector<Point> lowerHullVector(n);
+	std::vector<Point> returnHull;
+
+	std::thread upperHull([this](std::vector<Point> list, std::vector<Point> &upperHullVector, int n)
+		{
+			int hullSize = 0;
+			for (int i = 0; i < n; ++i)
+			{
+				while (hullSize >= 2 && cross(list[i], upperHullVector[hullSize - 1], upperHullVector[hullSize - 2]) < 0)
+				{
+					hullSize--;
+				}
+				upperHullVector[hullSize] = list[i];
+				hullSize++;
+			}
+			upperHullVector.resize(hullSize);
+		}
+	, list, std::ref(upperHullVector), n);
+
+	std::thread lowerHull([this](std::vector<Point> list, std::vector<Point> &lowerHullVector, int n)
+		{
+			int hullSize = 0;
+			for (int i = 0; i < n; ++i)
+			{
+				while (hullSize >= 2 && cross(list[i], lowerHullVector[hullSize - 1], lowerHullVector[hullSize - 2]) > 0)
+				{
+					hullSize--;
+				}
+				lowerHullVector[hullSize] = list[i];
+				hullSize++;
+			}
+			lowerHullVector.resize(hullSize);
+			lowerHullVector.erase(lowerHullVector.begin());
+			lowerHullVector.pop_back();
+		}
+	, list, std::ref(lowerHullVector), n);
+
+	upperHull.join();
+	lowerHull.join();
+
+	returnHull.insert(returnHull.end(), upperHullVector.begin(), upperHullVector.end());
+	returnHull.insert(returnHull.end(), lowerHullVector.rbegin(), lowerHullVector.rend());
+
+	auto stopCreateHull = std::chrono::high_resolution_clock::now();
+
+
+	auto sortingDuration = std::chrono::duration_cast<std::chrono::milliseconds>(stopSorting - startSorting);
+	auto creatingDuration = std::chrono::duration_cast<std::chrono::milliseconds>(stopCreateHull - startCreateHull);
+
+	std::cout << "\nMulti-Thread\n";
+	std::cout << "Presorting the Points took " << sortingDuration.count() << "s. \n";
+	std::cout << "Creating the Hull took " << creatingDuration.count() << "s. \n";
+
+	return returnHull;
 }

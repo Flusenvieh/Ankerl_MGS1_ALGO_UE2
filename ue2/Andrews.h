@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <chrono>
+#include <thread>
 
 #include "Point.h"
 #include "Quicksort.h"
@@ -11,6 +12,7 @@ class Andrews
 	public:
 		Andrews() {}
 		std::vector<Point> returnConvexHull(std::vector<Point> list) const;
+		std::vector<Point> returnConvexHull_Multithreaded(std::vector<Point> list) const;
 
 		void InitSteppable(std::vector<Point> list);
 		std::vector<Point> Step(void);
